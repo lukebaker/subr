@@ -20,6 +20,7 @@ abs_dirname() {
 }
 
 libexec_path="$(abs_dirname "$0")"
+args=$@
 export _SUBR_ROOT="$(abs_dirname "$libexec_path")"
 export PATH="${libexec_path}:$PATH"
 
@@ -29,13 +30,22 @@ case "$command" in
   exec subr-help
   ;;
 * )
-  command_path="$(command -v "subr-$command" || true)"
-  if [ ! -x "$command_path" ]; then
-    echo "subr: no such command \`$command'" >&2
+  command_path="$libexec_path"
+  while [ ! -z $1 ]; do
+    if [ ! -d "$command_path/$command" -a -x "$command_path/$command" ]; then
+      break
+    fi
+    command_path="$command_path/$command"
+    shift
+    command="$1"
+  done
+
+  if [ -z "$command" ]; then
+    echo "subr: no such command \`$args'" >&2
     exit 1
   fi
 
   shift
-  exec "$command_path" "$@"
+  exec "$command_path/$command" "$@"
   ;;
 esac
