@@ -31,11 +31,11 @@ case "$command" in
   ;;
 * )
   command_path="$libexec_path"
-  while [ ! -z $1 ]; do
-    if [ ! -d "$command_path/$command" -a -x "$command_path/$command" ]; then
+  while [ ! -z $command ]; do
+    command_path="$command_path/$command"
+    if [ ! -d "$command_path" -a -x "$command_path" ]; then
       break
     fi
-    command_path="$command_path/$command"
     shift
     command="$1"
   done
@@ -46,6 +46,6 @@ case "$command" in
   fi
 
   shift
-  exec "$command_path/$command" "$@"
+  exec "$command_path" "$@"
   ;;
 esac
