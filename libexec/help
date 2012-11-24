@@ -2,8 +2,13 @@
 set -e
 
 print_summaries() {
-  for file in $_SUBR_ROOT/libexec/subr-*; do
-    if [ ! -h $file ]; then
+  if [ -n "$1" ]; then
+    path=$1
+  else
+    path="$_SUBR_ROOT/libexec"
+  fi
+  for file in $path/*; do
+    if [ ! -h $file -a -e $file ]; then
       local summary=$(grep "^# Summary:" $file | cut -d ' ' -f3-)
       if [ -n "$summary" ]; then
         local name=$(basename $file | sed 's/subr-//')
@@ -29,7 +34,8 @@ print_help() {
 
 # Provide subr completions
 if [ "$1" = "--complete" ]; then
-  exec "subr-commands"
+  shift
+  echo "$(subr completions "$@")"
   exit
 fi
 
@@ -42,10 +48,22 @@ $(print_summaries)
 See 'subr help <command>' for information on a specific command."
 ;;
 *)
-  command_path="$(command -v "$_SUBR_ROOT/libexec/subr-$1" || true)"
-  if [ -n "$command_path" ]; then
-    print_help "$_SUBR_ROOT/libexec/subr-$1"
+  args="$@"
+  command="$1"
+  command_path="$_SUBR_ROOT/libexec"
+  while [ ! -z $command ]; do
+    command_path="$command_path/$command"
+    if [ ! -d "$command_path" -a -x "$command_path" ]; then
+      break
+    fi
+    shift
+    command="$1"
+  done
+  if [ -d "$command_path" ]; then
+    print_summaries "$command_path"
+  elif [ -e "$command_path" ]; then
+    print_help "$command_path"
   else
-    echo "subr: no such command \`$1'"
+    echo "subr: no such command \`$args'"
   fi
 esac
