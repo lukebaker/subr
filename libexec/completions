@@ -2,13 +2,22 @@
 set -e
 
 COMMAND="$1"
-if [ -z "$COMMAND" ]; then
-  echo "usage: subr completions COMMAND [arg1 arg2...]" >&2
-  exit 1
-fi
 
-COMMAND_PATH="$(command -v "subr-$COMMAND")"
-if grep -i "^# provide subr completions" "$COMMAND_PATH" >/dev/null; then
+command_path="$_SUBR_ROOT/libexec"
+while [ -n "$COMMAND" ]; do
+  command_path="$command_path/$COMMAND"
+  if [ ! -d "$command_path" -a -x "$command_path" ]; then
+    break
+  fi
   shift
-  exec "$COMMAND_PATH" --complete "$@"
+  COMMAND="$1"
+done
+
+if [ -d "$command_path" ]; then
+  find $command_path -maxdepth 1 -mindepth 1 -executable -printf "%f\n"
+else
+  if grep -i "^# provide subr completions" "$command_path" >/dev/null; then
+    shift
+    exec "$command_path" --complete "$@"
+  fi
 fi

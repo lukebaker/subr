@@ -6,37 +6,9 @@
 
 set -e
 
-# Provide subr completions
-if [ "$1" = "--complete" ]; then
-  echo --sh
-  echo --no-sh
-  exit
+path="$_SUBR_ROOT/libexec"
+if [ -n $1 ]; then
+  path="$path/$1"
 fi
 
-if [ "$1" = "--sh" ]; then
-  sh=1
-  shift
-elif [ "$1" = "--no-sh" ]; then
-  nosh=1
-  shift
-fi
-
-shopt -s nullglob
-
-{ for path in ${PATH//:/$'\n'}; do
-    for command in "${path}/subr-"*; do
-      command="${command##*subr-}"
-      if [ -n "$sh" ]; then
-        if [ ${command:0:3} = "sh-" ]; then
-          echo ${command##sh-}
-        fi
-      elif [ -n "$nosh" ]; then
-        if [ ${command:0:3} != "sh-" ]; then
-          echo ${command##sh-}
-        fi
-      else
-        echo ${command##sh-}
-      fi
-    done
-  done
-} | sort | uniq
+find -L $path -maxdepth 1 -mindepth 1 -type f -executable -printf "%f\n"

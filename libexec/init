@@ -63,7 +63,6 @@ bash | zsh )
   ;;
 esac
 
-commands=(`subr commands --sh`)
 IFS="|"
 cat <<EOS
 subr() {
@@ -73,8 +72,6 @@ subr() {
   fi
 
   case "\$command" in
-  ${commands[*]})
-    eval \`subr "sh-\$command" "\$@"\`;;
   *)
     command subr "\$command" "\$@";;
   esac
