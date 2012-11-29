@@ -27,7 +27,7 @@ export PATH="${libexec_path}:$PATH"
 command="$1"
 case "$command" in
 "" | "-h" | "--help" )
-  exec subr-help
+  exec help
   ;;
 * )
   command_path="$libexec_path"
