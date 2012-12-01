@@ -20,9 +20,22 @@ abs_dirname() {
 }
 
 libexec_path="$(abs_dirname "$0")"
-args=$@
+
 export _SUBR_ROOT="$(abs_dirname "$libexec_path")"
 export PATH="${libexec_path}:$PATH"
+
+# set sub path if it exists
+if [ -n "$_SUBR_SUB_COMMAND" ]; then
+  sub_path=$(echo $_SUBR_SUB_COMMAND | tr ' ' '/')
+  if [ -d "$libexec_path/$sub_path" ]; then
+    export _SUBR_SUB_PATH="$libexec_path/$sub_path"
+  else
+    echo "ERROR: Could not find $libexec_path/$sub_path" >&2
+    exit 1
+  fi
+fi
+
+source "$_SUBR_ROOT/libexec/subr.include"
 
 command="$1"
 case "$command" in
@@ -30,22 +43,16 @@ case "$command" in
   exec help
   ;;
 * )
-  command_path="$libexec_path"
-  while [ ! -z $command ]; do
-    command_path="$command_path/$command"
-    if [ ! -d "$command_path" -a -x "$command_path" ]; then
-      break
+  get_path_from_command $@
+  if [ ! -d "$command_path" -a -x "$command_path" ]; then
+    if [ ! -z "$remaining_args" ]; then
+      exec "$command_path" "$remaining_args"
+    else
+      exec "$command_path"
     fi
-    shift
-    command="$1"
-  done
-
-  if [ -z "$command" ]; then
-    echo "subr: no such command \`$args'" >&2
+  else
+    echo "subr: no such command \`$@'" >&2
     exit 1
   fi
-
-  shift
-  exec "$command_path" "$@"
   ;;
 esac

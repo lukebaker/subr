@@ -1,0 +1,27 @@
+#!/bin/bash
+set -e
+get_path_from_command() {
+  command="$1"
+  
+  # search for SUBR commands (e.g., help)
+  command_path="$_SUBR_ROOT/libexec"
+  if [ ! -d "$command_path/$command" -a -x "$command_path/$command" ]; then
+    shift
+    command_path="$command_path/$command"
+    remaining_args="$@"
+    return
+  fi
+
+  if [ ! -z "$_SUBR_SUB_PATH" ]; then
+    command_path="$_SUBR_SUB_PATH"
+  fi
+  while [ ! -z "$command" ]; do
+    command_path="$command_path/$command"
+    shift
+    if [ ! -d "$command_path" -a -x "$command_path" ]; then
+      remaining_args="$@"
+      break
+    fi
+    command="$1"
+  done
+}
