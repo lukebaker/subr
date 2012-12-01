@@ -3,23 +3,14 @@ set -e
 
 print_summaries() {
   if [ -n "$1" ]; then
-    path=$1
+    paths[0]=$1
   else
-    path="$_SUBR_ROOT/libexec"
-  fi
-  for file in $path/*; do
-    if [ ! -h $file -a -e $file ]; then
-      local summary=$(grep "^# Summary:" $file | cut -d ' ' -f3-)
-      if [ -n "$summary" ]; then
-        local name=$(basename $file | sed 's/subr-//')
-        echo "$name" | awk '{ printf "   %-20s   ", $1}'
-        echo -n $summary
-        echo
-      fi
+    paths[0]="$_SUBR_ROOT/libexec"
+    if [ ! -z $_SUBR_SUB_PATH ]; then
+      paths[1]=$_SUBR_SUB_PATH
     fi
-  done
-  if [ ! -z $_SUBR_SUB_PATH ]; then
-    path="$_SUBR_SUB_PATH"
+  fi
+  for path in "${paths[@]}"; do
     for file in $path/*; do
       if [ ! -h $file -a -e $file ]; then
         local summary=$(grep "^# Summary:" $file | cut -d ' ' -f3-)
@@ -31,7 +22,7 @@ print_summaries() {
         fi
       fi
     done
-  fi
+  done
 }
 
 print_help() {
