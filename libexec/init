@@ -64,16 +64,16 @@ bash | zsh )
 esac
 
 IFS="|"
-cat <<EOS
-subr() {
-  local command="\$1"
-  if [ "\$#" -gt 0 ]; then
-    shift
-  fi
-
-  case "\$command" in
-  *)
-    command subr "\$command" "\$@";;
-  esac
-}
-EOS
+#cat <<EOS
+#subr() {
+#  local command="\$1"
+#  if [ "\$#" -gt 0 ]; then
+#    shift
+#  fi
+#
+#  case "\$command" in
+#  *)
+#    command subr "\$command" "\$@";;
+#  esac
+#}
+#EOS
