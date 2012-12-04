@@ -43,10 +43,10 @@ case "$command" in
   exec help
   ;;
 * )
-  get_path_from_command $@
+  get_path_from_command "$@"
   if [ ! -d "$command_path" -a -x "$command_path" ]; then
     if [ ! -z "$remaining_args" ]; then
-      exec "$command_path" "$remaining_args"
+      exec "$command_path" "${remaining_args[@]}"
     else
       exec "$command_path"
     fi

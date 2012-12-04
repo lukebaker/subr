@@ -4,13 +4,13 @@ set -e
 COMMAND="$1"
 
 source "$_SUBR_ROOT/libexec/subr.include"
-get_path_from_command $@
+get_path_from_command "$@"
 
 if [ -d "$command_path" ]; then
   find $command_path -maxdepth 1 -mindepth 1 -executable -printf "%f\n"
 else
   if grep -i "^# provide subr completions" "$command_path" >/dev/null; then
     shift
-    exec "$command_path" --complete "$remaining_args"
+    exec "$command_path" --complete "${remaining_args[@]}"
   fi
 fi

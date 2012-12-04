@@ -55,7 +55,7 @@ $(print_summaries)
 See 'subr help <command>' for information on a specific command."
 ;;
 *)
-  get_path_from_command $@
+  get_path_from_command "$@"
   if [ ! -d "$command_path" -a -x "$command_path" ]; then
     print_help "$command_path"
   elif [ -d "$command_path" ]; then
