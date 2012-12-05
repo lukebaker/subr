@@ -1,4 +1,4 @@
-# subr: sub recursed
+# subr: sub redux
 
 Subr is inspired and based off of [sub.](https://github.com/37signals/sub) The primary change is support for any number of levels of directories for organizing your commands. Like sub, subr provides a handy way to organize commands, a built-in help and tab completion system.
 
