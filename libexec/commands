@@ -11,4 +11,8 @@ if [ -n $1 ]; then
   path="$path/$1"
 fi
 
-find -L $path -maxdepth 1 -mindepth 1 -type f -perm +111 -printf "%f\n"
+for file in $path/*; do
+  if [ -x "$file" -a -f "$file" ]; then
+    echo $(basename "$file")
+  fi
+done

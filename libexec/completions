@@ -7,7 +7,11 @@ source "$_SUBR_ROOT/libexec/subr.include"
 get_path_from_command "$@"
 
 if [ -d "$command_path" ]; then
-  find $command_path -maxdepth 1 -mindepth 1 -perm +111 -printf "%f\n"
+  for file in $command_path/*; do
+    if [ -x "$file" ]; then
+      echo $(basename "$file")
+    fi
+  done
 else
   if grep -i "^# provide subr completions" "$command_path" >/dev/null; then
     shift
