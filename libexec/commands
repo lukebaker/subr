@@ -11,4 +11,4 @@ if [ -n $1 ]; then
   path="$path/$1"
 fi
 
-find -L $path -maxdepth 1 -mindepth 1 -type f -executable -printf "%f\n"
+find -L $path -maxdepth 1 -mindepth 1 -type f -perm +111 -printf "%f\n"
