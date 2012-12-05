@@ -1,4 +1,4 @@
-# subr: sub recursed
+# subr: sub redux
 
 Subr is inspired and based off of [sub.](https://github.com/37signals/sub) The primary change is support for any number of levels of directories for organizing your commands. Like sub, subr provides a handy way to organize commands, a built-in help and tab completion system.
 
@@ -110,6 +110,7 @@ You could also install subr in a different directory, say `/usr/local`. This is 
  * commands can be placed in sub-directories beneath `libexec/`
  * short-cut commands can be created to specific sub-directories within `libexec/`
  * exposed variable names and magic comments are constant and not dependent on the sub (e.g., $_SUBR_ROOT and the magic comment indicating tab-completion support)
+ * when calling `--complete` to get completions, script will receive any additional parameters that were already specified by the user. This allows you to tailor the completions based on the parameters that will be passed in.
 
 ## License
 
